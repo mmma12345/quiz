@@ -1,0 +1,277 @@
+<style>
+    .hover_menu_tag a:nth-child(3) {
+        border-left: 3px solid #ff0505 !important;
+        background: rgba(255, 255, 255, 0.251);
+    }
+</style>
+
+<div class="card text-start mt-2 shadow-sm">
+    <div class="card-body">
+        <div class="d-flex justify-content-center">
+            <form id="Form" method="POST" action="/admin/store" class="col-12 row" enctype="multipart/form-data">
+                <div class="border-bottom border-2 mb-3 d-flex justify-content-between">
+                    <h5 class="">CREATE QUESTION</h5>
+                    <div class="col-3 mb-3">
+                        <div class="">
+                            <select id="category" name="category_id" class="form-select">
+                                <% categories.forEach(categorie => { %>
+                                <option value="<%- categorie.id %>"><%- categorie.name %></option>
+                                <% }); %>
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 mb-3">
+                    <label for="title" class="form-label">Title</label>
+
+                    <div class="">
+                        <input id="title" type="text" class="form-control rounded-0" name="title" required
+                            autocomplete="title">
+                    </div>
+                </div>
+
+
+                <div class="col-lg-6 mb-3">
+                    <label for="image" class="form-label">Cover Image</label>
+
+                    <div class="">
+                        <input type="file" name="image" accept="image/*" class="form-control rounded-0" required
+                            autocomplete="">
+
+                    </div>
+                </div>
+
+                <nav class="d-flex">
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <button class="nav-link rounded-0 active" id="nav-qs-tab" data-bs-toggle="tab"
+                            data-bs-target="#nav-qs-0" type="button" role="tab" aria-controls="nav-qs"
+                            aria-selected="true">QS1</button>
+                    </div>
+                    <button id="plus-btn" class="btn btn-primary rounded-0">+</button>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active " id="nav-qs-0" role="tabpanel" aria-labelledby="nav-qs-tab"
+                        tabindex="0">
+                        <div class="d-flex row row-cols-lg-2 row-cols-1">
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label for="question" class="form-label">Question</label>
+
+                                    <div class="">
+                                        <textarea id="question" type="question" class="form-control rounded-0" name="questions[0][question]" required
+                                            autocomplete="question" rows="1"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="answer_type" class="form-label">Answer type</label>
+                                    <select id="answer_type" name="questions[0][answer_type]" class="form-select" required>
+                                        <option value="select" selected>Select</option>
+                                        <option value="text">Text</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="correct_answer" class="form-label">Correct Answer</label>
+
+                                    <div class="">
+                                        <textarea id="correct_answer" type="text" class="form-control  rounded-0" name="questions[0][correct_answer]"
+                                            required autocomplete="correct_answer" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <label for="incorrect_answers" class="form-label">Incorrect Answers</label>
+                                    <button type="button" class="btn btn-secondary btn-sm mt-1"
+                                        onclick="addIncorrectAnswer(0)">+</button>
+                                </div>
+                                <div class="">
+                                    <div id="incorrect-answers-container-0">
+                                        <div class="d-flex mb-2 mt-1">
+                                        <textarea type="text" id="incorrect_answer_1" class="form-control rounded-0"
+                                            name="questions[0][incorrect_answers][]" required rows="1"></textarea>
+                                            <button type="button" class="btn btn-danger btn-sm ms-2" onclick="deleteIncorrectAnswer(this)"><i class="fa-solid fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-0">
+                    <div class="">
+                        <button type="submit" class="btn btn-primary rounded-0 col-12 btn-info text-white">
+                            CREATE
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    // $(document).ready(function() {
+    let tabCounter = 0;
+
+    function addTab() {
+        tabCounter++;
+        const newTabId = `nav-qs-${tabCounter}`;
+        const newTabPaneId = `nav-qs-${tabCounter}-pane`;
+
+        // Create the new tab button
+        const newTabButton = $(
+            `<button class="nav-link rounded-0" id="${newTabId}" data-bs-toggle="tab" data-bs-target="#${newTabPaneId}" type="button" role="tab" aria-controls="${newTabId}" aria-selected="false">QS${tabCounter + 1}</button>`
+        );
+
+        // Create the delete button
+        const deleteButton = $(
+            `<span id="delete-btn-${tabCounter}" class="btn btn-light btn-sm d-flex align-items-center" onclick="deleteTab('${newTabId}', '${newTabPaneId}', 'delete-btn-${tabCounter}')"><i class="fa-solid fa-trash text-danger"></i></span>`
+        );
+
+        // Create the new tab content
+        const newTabContent = $(`
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="${newTabPaneId}" role="tabpanel" aria-labelledby="nav-qs-tab-${tabCounter}" tabindex="0">
+        <div class="d-flex row row-cols-lg-2 row-cols-1">
+            <div class="col">
+        <div class="mb-3">
+          <label for="question" class="form-label">Question</label>
+          <div class="">
+            <input id="question" type="question" class="form-control rounded-0" name="questions[${tabCounter}][question]" required autocomplete="question">
+          </div>
+        </div>
+
+    <div class="mb-3">
+        <label for="answer_type" class="form-label">Answer type</label>
+        <select id="answer_type" name="questions[${tabCounter}][answer_type]" class="form-select" required>
+            <option value="select" selected>Select</option>
+            <option value="text">Text</option>
+        </select>
+    </div>
+
+
+        <div class="mb-3">
+          <label for="correct_answer" class="form-label">Correct Answer</label>
+          <div class="">
+            <textarea id="correct_answer" type="text" class="form-control rounded-0" name="questions[${tabCounter}][correct_answer]" required autocomplete="correct_answer" rows="3"></textarea>
+          </div>
+        </div>
+</div>
+        <div class="col-lg-6 mb-3">
+            <div class="d-flex justify-content-between">
+                                <label for="incorrect_answers" class="form-label">Incorrect Answers</label>
+                                <button type="button" class="btn btn-secondary btn-sm mt-1" onclick="addIncorrectAnswer(${tabCounter})">+</button>
+                            </div>
+    <div class="">
+        <div id="incorrect-answers-container-${tabCounter}">
+            <textarea type="text" id="incorrect_answer_1" class="form-control rounded-0 mb-2" name="questions[${tabCounter}][incorrect_answers][]" required rows="1"></textarea><button type="button" class="btn btn-danger btn-sm ms-2" onclick="deleteIncorrectAnswer(this)"><i class="fa-solid fa-trash"></i></button>
+        </div>
+       
+    </div>
+</div>
+</div>
+      </div>
+    </div>
+  `);
+
+        // Append the new tab button, delete button, and content
+        $('#nav-tab').append(newTabButton).append(deleteButton);
+        $('#nav-tabContent').append(newTabContent);
+
+        // Activate the new tab
+        newTabButton.tab('show');
+    }
+
+    function addIncorrectAnswer(incorrect_tabCounter) {
+        const container = $(`#incorrect-answers-container-${incorrect_tabCounter}`);
+        const newIncorrectAnswerInput = $(
+            `<div class="d-flex mb-2"><textarea type="text" class="form-control rounded-0" name="questions[${incorrect_tabCounter}][incorrect_answers][]" required rows="1"></textarea><button type="button" class="btn btn-danger btn-sm ms-2" onclick="deleteIncorrectAnswer(this)"><i class="fa-solid fa-trash"></i></button></div>`
+        );
+        container.append(newIncorrectAnswerInput);
+    }
+
+    function deleteIncorrectAnswer(deleteBtn) {
+        $(deleteBtn).parent().remove();
+    }
+
+    function deleteTab(tabId, newTabPaneId, del_id) {
+        $(`#nav-qs-${tabCounter - 1}`).click()
+        $(`#${tabId}`).remove();
+        $(`#${newTabPaneId}`).remove();
+        $(`#${del_id}`).remove();
+        // You may need to adjust the remaining tab ids if you want to keep them sequential
+    }
+
+    // Event listener for the plus button
+    $('#plus-btn').on('click', function() {
+        addTab();
+    });
+    // });
+</script>
+<script>
+$('button[type="submit"]').on('click', function(e) {
+    e.preventDefault();
+    const formDataArray = $('#Form').serializeArray();
+
+    const formDataObject = formDataArray.reduce((result, entry) => {
+        const match = entry.name.match(/(\w+)(?:\[(\d+)\])?(?:\[(\w+)\])?(?:\[])?/);
+
+        if (match) {
+            const [, key, index, subKey] = match;
+            if (index !== undefined) {
+                if (!result[key]) {
+                    result[key] = [];
+                }
+
+                if (!result[key][index]) {
+                    result[key][index] = {};
+                }
+
+                if (subKey === "incorrect_answers") {
+                    if (!result[key][index][subKey]) {
+                        result[key][index][subKey] = [];
+                    }
+                    result[key][index][subKey].push(entry.value);
+                } else {
+                    result[key][index][subKey] = entry.value;
+                }
+            } else {
+                result[key] = entry.value;
+            }
+        }
+
+        return result;
+    }, {});
+
+    const formData = new FormData();
+
+    // Append each key-value pair from formDataObject
+    Object.entries(formDataObject).forEach(([key, value]) => {
+        formData.append(key, JSON.stringify(value));
+    });
+
+    // Append the file
+    const imageInput = $('input[name="image"]')[0].files[0];
+    if (imageInput) {
+        formData.append('image', imageInput);
+    }
+
+    console.log(formDataObject);
+    console.log(formData);
+
+    fetch('/admin/store', {
+            method: 'POST',
+            body: formData,
+        })
+        .then((res) => res.json())
+        .then((data) => console.log(data))
+        .catch((error) => console.error(error));
+
+});
+</script>

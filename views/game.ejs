@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="bg-black text-white">
+    <div class="height d-flex flex-column align-items-center justify-content-center">
+        <div id="countdown" class="" style="font-size: 8rem; color: rgb(9, 198, 9);">
+        </div>
+        <div id="game_container" class="p-2 col-12">
+            <!-- datas -->
+        </div>
+        <div class="col-12" id="result_container" style="display: none;">
+            <div class="d-flex justify-content-center">
+                <div class="col-11 col-lg-4 sureDivBg d-flex justify-content-center rounded">
+                    <div class="p-3 col-12">
+                        <div class="d-flex justify-content-center">
+                            <h5 class="text-white mb-3">Summary</h5>
+                        </div>
+                        <div class="mt-2 mb-3 d-flex Acc rounded">
+                            <div class="d-flex ms-2 align-items-center p-2">
+                                <div>
+                                    <img class="rounded-circle " src="https://images3.alphacoders.com/100/1000030.jpg"
+                                        width="40" height="40" alt="">
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 ms-2 text-white"><%- user %></h6>
+                                    <p class="mb-0 ms-2 Login-to-save-results-bg text-mu">Thanks for bla bla.....</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <form action="/play-again/<%- titleId %>" method="post">
+                                <button type="submit" class="btn btn-success col-12 mb-2 fw-medium">
+                                    <i class="fa-solid fa-play me-2"></i>Play again</button>
+                            </form>
+                        </div>
+                        <div>
+                            <a href="/games" class="btn btn-warning col-12 mb-3 fw-medium">
+                                <i class="fa-solid fa-play me-2"></i>Go Home</a>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <h6 class="text-white mb-3">Performance Stats</h6>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <div class="col-6 me-2">
+                                <div class="correctDiv rounded col-12 d-flex justify-content-center">
+                                    <div class="p-2 text-center">
+                                        <h3 class="m-0" id="correct"></h3>
+                                        <p class="m-0">Correct</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="incorrectDiv rounded col-12 d-flex justify-content-center">
+                                    <div class="p-2 text-center">
+                                        <h3 class="m-0" id="incorrect"></h3>
+                                        <p class="m-0">Incorrect</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12" id="sure_container" style="display: none;">
+            <div class="d-flex justify-content-center">
+                <div class="col-11 col-lg-4 sureDivBg d-flex justify-content-center rounded">
+                    <div class="p-3 col-12">
+                        <div class="d-flex justify-content-center">
+                            <h5 class="text-white mb-3">Are you sure?</h5>
+                        </div>
+                        <div>
+                            <button id="start-btn" type="button" class="btn btn-success  col-12 mb-2 fw-medium">
+                                <i class="fa-solid fa-play me-2"></i>Start</button>
+                        </div>
+                        <div>
+                            <button id="back-button" type="button"
+                                class="btn btn-warning col-12 text-white mb-2 fw-medium">
+                                <i class="fa-solid fa-arrow-left me-2 text-white"></i>Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous">
+    </script>
+
+    <script>
+        $(document).ready(function() {
+
+            $("#back-button").click(function() {
+                window.history.back();
+            });
+
+            const countdownElement = $("#countdown");
+            let Index = sessionStorage.getItem("Index");
+            if ( <%- done %> ) {
+                countdownElement.hide();
+                $("#game_container").hide()
+                $("#correct").text( <%- correct %> );
+                $("#incorrect").text( <%- incorrect %> );
+                $("#result_container").fadeIn(300);
+                return;
+            }
+
+            let is_check_answer = false;
+            let countdown = 4;
+            let countdownInterval;
+            if (Index == 0 || Index === null) {
+                $("#sure_container").fadeIn(300, () => {
+                    $("#start-btn").click(() => {
+                        $("#sure_container").fadeOut(600);
+                        countdownInterval = setInterval(updateCountdown, 1300);
+                    });
+                });
+            } else {
+                countdownElement.hide();
+                fetchQuestion();
+            }
+            // Function to update the countdown
+            function updateCountdown() {
+                if (countdown > 1) {
+                    countdown--;
+                    if (countdown === 2) {
+                        countdownElement.css("color", "#00A9FF");
+                    }
+                    if (countdown === 1) {
+                        countdownElement.css("color", "#F1D302");
+                    }
+                    countdownElement.text(countdown);
+                } else if (countdown === 1) {
+                    countdownElement.text("GO!");
+                    countdownElement.css("color", "red");
+                    countdown--;
+                } else {
+                    clearInterval(countdownInterval);
+                    countdownElement.fadeOut(300);
+                    fetchQuestion();
+                }
+            }
+
+            if (Index === null) {
+                Index = 0;
+            }
+
+            let question_id;
+
+            function fetchQuestion() {
+                $.post('/games/<%- titleId %>', {
+                        questionIndex: Index,
+                    }, function(data) {
+                        console.log(data)
+                        if (data.done) {
+                            sessionStorage.removeItem("Index");
+                            $("#game_container").hide();
+                            $("#correct").text(data.correct);
+                            $("#incorrect").text(data.incorrect);
+                            $("#result_container").fadeIn(300);
+                            return;
+                            // return window.location.href = "/done";
+                        }
+                        question_id = data.question_id;
+                        $("#game_container").fadeOut(300, function() {
+                            $(this).html(data.html).fadeIn(300);
+                            $('.progress-bar').on('animationend', function() {
+                                if ($(this).css('width') === '0px') {
+                                    checkAnswer('fulltime#$22');
+                                }
+                            });
+                            $('.options-container').on('click', '.option', function() {
+                                if (!is_check_answer) {
+                                    var selectedAnswer = $(this).text();
+                                    checkAnswer(selectedAnswer);
+                                }
+                            });
+                            $('.options-container').on('click', '.check-answer-btn', function() {
+                              if (!is_check_answer) {
+                                var selectedAnswer = $('#text_answer').val();
+                                checkAnswer(selectedAnswer);
+                              }
+                            });
+                        }); 
+                    })
+                    .fail(function(xhr, status, error) {
+                        sessionStorage.setItem("Index", 0);
+                    });
+            }
+
+            function checkAnswer(userAnswer) {
+                $('.progress-bar').css('animation-play-state', 'paused');
+                $.post('/quiz/check-answer', {
+                    id: question_id,
+                    userAnswer: userAnswer,
+                    titleId: <%- titleId %>,
+                }, function(data) {
+                    Index++;
+                    sessionStorage.setItem("Index", Index);
+                    if (data.isCorrect) {
+                        $('.progress-bar').css({
+                            'width': '100%',
+                            'background-color': 'green',
+                        })
+
+                        $('.check-answer-btn').css({
+                            'background': 'rgba(51, 206, 24, 0.804)'
+                        })
+                        $('.form__field').css({
+                             'border-bottom':  'rgba(51, 206, 24, 0.804)',
+                         })
+                    } else {
+                        $('.progress-bar').css({
+                            'width': '100%',
+                            'background-color': 'rgba(206, 33, 24, 0.804)',
+                        })
+
+                        $('.check-answer-btn').css({
+                            'background': 'rgba(206, 33, 24, 0.804)'
+                        })
+                    }
+
+                    $('.option').each(function() {
+                        if ($(this).text() !== data.correctAnswer) {
+                            $(this).css({
+                                'background': 'transparent',
+                                'border-color': 'rgba(206, 33, 24, 0.804)',
+                                'cursor': 'pointer',
+                                'color': 'rgba(206, 33, 24, 0.804)',
+                            });
+                        } else {
+                            $(this).css({
+                                'background': 'transparent',
+                                'border-color': 'rgba(51, 206, 24, 0.804)',
+                                'cursor': 'pointer',
+                                'color': 'rgba(51, 206, 24, 0.804)',
+                            });
+                        }
+                    });
+                    is_check_answer = true;
+
+                    setTimeout(function() {
+                        fetchQuestion();
+                        is_check_answer = false;
+                    }, 3000);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

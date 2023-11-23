@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Game</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <h1>Quiz Game</h1>
+    <div id="question-container">
+        <p id="question"></p>
+        <button id="option-1">
+            <%- answer1 %>
+        </button>
+        <button id="option-2">
+            <%- answer2 %>
+        </button>
+        <button id="option-3">
+            <%- answer3 %>
+        </button>
+        <button id="option-4">
+            <%- answer4 %>
+        </button>
+    </div>
+    <div id="result-container">
+        <p id="result"></p>
+        <p id="correct-answer"></p>
+    </div>
+    <button id="next-question">Next Question</button>
+
+    <script>
+        $(document).ready(function() {
+
+            function checkAnswer(questionId, userAnswer) {
+                console.log(userAnswer)
+                $.post('/quiz/check-answer', {
+                    id: 1,
+                    userAnswer: userAnswer,
+                }, function(data) {
+                    if (data.isCorrect) {
+                        $('#result').text('Correct!');
+                    } else {
+                        $('#result').text('Wrong!');
+                        $('#correct-answer').text('Correct Answer: ' + data.correctAnswer);
+                    }
+
+                    $('#result-container').show();
+                });
+            }
+
+            $('#next-question').click(function() {
+                $('#result-container').hide();
+                fetchQuestion();
+            });
+
+            $('#option-1').click(function() {
+                checkAnswer("1",$('#option-1').text());
+            });
+
+            $('#option-2').click(function() {
+                checkAnswer("1",$('#option-2').text());
+            });
+
+            $('#option-3').click(function() {
+                checkAnswer("1",$('#option-3').text());
+            });
+
+            $('#option-4').click(function() {
+                checkAnswer("1",$('#option-4').text());
+            });
+        });
+    </script>
+</body>
+
+</html>

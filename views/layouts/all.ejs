@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://kit.fontawesome.com/f9f764c89f.js" crossorigin="anonymous"></script>
+    <script>
+        window.fbAsyncInit = function() {
+          FB.init({
+            appId      : '1332174937431981',
+            cookie: true,
+            xfbml      : true,
+            version    : 'v18.0'
+          });
+          FB.AppEvents.logPageView();
+        };
+      
+        (function(d, s, id){
+           var js, fjs = d.getElementsByTagName(s)[0];
+           if (d.getElementById(id)) {return;}
+           js = d.createElement(s); js.id = id;
+           js.src = "https://connect.facebook.net/en_US/sdk.js";
+           fjs.parentNode.insertBefore(js, fjs);
+         }(document, 'script', 'facebook-jssdk'));
+      </script>
+</head>
+
+<body class="">
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm fixed-top">
+        <div class="container-fluid container d-flex justify-content-between">
+            <div>
+                <a href="#">
+                    <img src="/img/photo_2023-09-09_20-46-56-removebg-preview (1).png" width="130" alt="">
+                </a>
+            </div>
+
+            <div>
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+                    aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas-header">
+                        <div class="offcanvas-title" id="offcanvasNavbarLabel">
+                            
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <% if (user) { %>
+                          <div class="d-flex align-items-center me-2">Welcome, <%= user %></div>
+                          <a href="/logout"><button type="button" class="btn btn-white shadow-sm border-white rounded-3">Logout</button></a>
+                        <% } else { %>
+                          <a href="/login"><button type="button" class="btn btn-white shadow-sm border-white rounded-3 me-3">Login</button></a>
+                          <a href="/register"><button type="button" class="btn btn-white shadow-sm border-white rounded-3">Sign up</button></a>
+                        <% } %>
+                      </div>                      
+                </div>
+            </div>
+        </div>
+    </nav>
+    <%- include(content) %>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

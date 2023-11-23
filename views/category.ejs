@@ -1,0 +1,27 @@
+<div style="margin-top: 5rem;" class="container">
+    <% categories.forEach(category => { %>
+        <div class="container d-flex justify-content-between">
+            <h5><%= category.name %></h5>
+            <a href="/games/category/<%= category.id %>" class="fw-medium text-decoration-none text-black">See more..</a>
+        </div>
+        <div class="container mb-3 mt-2">
+            <div class="row row-cols-2 row-cols-lg-4 g-3">
+                <% category.titles.forEach(title => { %>
+                    <div class="d-flex justify-content-center">
+                        <div class="card col-lg-10 pointer">
+                            <a href="/games/<%= title.id %>" class="forgot-password">
+                                <div class="mt-1">
+                                    <span class="border-bottom border-primary ms-2 rounded px-1"><%= title.questions.length %>Qs</span>
+                                </div>
+                                <img src="/cover/<%= title.image %>" class="card-img-top rounded-0 mt-1" alt="...">
+                                <div class="card-body py-2 ps-2">
+                                    <p class="card-text d-inline-block text-truncate" style="min-width: 100px;"><%= title.name %></p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    <% }); %>
+</div>

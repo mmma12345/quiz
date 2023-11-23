@@ -1,0 +1,34 @@
+body{
+    overflow-x: hidden;
+}
+
+.menu{
+    height: 100vh;
+}
+
+.bg-menu{
+   background-color: #15C7FF;
+}
+
+.main_page{
+    height: 100vh;
+}
+
+.hover_menu_tag a:hover{
+    background: rgba(255, 255, 255, 0.106);
+}
+
+.hover_menu_tag a:focus{
+    background: rgba(255, 255, 255, 0.251);
+}
+
+@media (max-width: 768px) {
+    .menu{
+        height: 100%;
+    }
+
+    #focus_tag{
+     border-left: 0px !important;
+    }
+ }
+
